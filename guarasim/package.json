@@ -1,0 +1,10 @@
+{
+  "name": "guarasim",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
+    "start": "python3 -m http.server 3000 --bind 0.0.0.0",
+    "build": "rm -rf dist && mkdir -p dist && cp index.html styles.css app.js manus-routes.json dist/ && cp -r public dist/public"
+  }
+}

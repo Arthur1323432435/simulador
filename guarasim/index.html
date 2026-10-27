@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simulador econômico interativo baseado no estudo de caso da Cervejaria Guará." />
+    <meta name="theme-color" content="#0c211c" />
+    <title>Simulador Econômico — Cervejaria Guará</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Cervejaria Guará, início">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="brand-copy"><strong>GUARÁ</strong><small>ECONOMIA DA CERVEJA</small></span>
+        </a>
+        <div class="topbar-meta">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>simulação em tempo real</span>
+          <span class="topbar-divider" aria-hidden="true"></span>
+          <span class="mono">v1.0 · caso 2026</span>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero section-wrap" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> laboratório econômico</p>
+            <h1 id="hero-title">Decida onde cada litro cria <em>mais valor.</em></h1>
+            <p class="hero-lede">Explore a fronteira produtiva, o mercado e a rentabilidade da Guará. Ajuste as premissas e acompanhe a resposta econômica em segundos.</p>
+            <div class="hero-tags" aria-label="Escopo da simulação">
+              <span>CPP</span><span>mercado IPA</span><span>custos</span><span>lucro</span>
+            </div>
+          </div>
+          <div class="hero-signal" aria-label="Resumo do caso base">
+            <div class="signal-orbit orbit-one"></div><div class="signal-orbit orbit-two"></div>
+            <div class="signal-core"><span class="signal-value">50</span><span class="signal-unit">mil L IPA</span></div>
+            <div class="signal-label signal-label-top"><span class="signal-label-dot"></span> ponto de lucro máximo</div>
+            <div class="signal-label signal-label-bottom">R$ 190 mil <span>lucro base</span></div>
+          </div>
+        </section>
+
+        <section class="workspace section-wrap" aria-label="Painel de simulação">
+          <aside class="control-panel panel-card" aria-labelledby="controls-title">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">01 / premissas</p>
+                <h2 id="controls-title">Painel de controle</h2>
+              </div>
+              <span class="control-icon" aria-hidden="true">↯</span>
+            </div>
+            <p class="panel-intro">Mova os controles para testar uma nova decisão operacional.</p>
+
+            <div class="control-group">
+              <div class="control-label-row"><label for="ipa-range">Produção de IPA</label><output id="ipa-output" for="ipa-range">50 mil L</output></div>
+              <div class="range-row"><input id="ipa-range" type="range" min="0" max="75" step="1" value="50" /><input id="ipa-number" class="mini-number" type="number" min="0" max="75" step="1" value="50" aria-label="Produção de IPA em mil litros" /></div>
+              <div class="range-scale"><span>0</span><span>75 mil L</span></div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row"><label for="pilsen-range">Produção de Pilsen</label><output id="pilsen-output" for="pilsen-range">30 mil L</output></div>
+              <div class="range-row"><input id="pilsen-range" type="range" min="0" max="100" step="1" value="30" /><input id="pilsen-number" class="mini-number" type="number" min="0" max="100" step="1" value="30" aria-label="Produção de Pilsen em mil litros" /></div>
+              <div class="range-scale"><span>0</span><span>100 mil L</span></div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row"><label for="price-range">Preço de venda da IPA</label><output id="price-output" for="price-range">R$ 15,00/L</output></div>
+              <div class="range-row"><input id="price-range" type="range" min="0" max="30" step="0.5" value="15" /><input id="price-number" class="mini-number" type="number" min="0" max="30" step="0.5" value="15" aria-label="Preço de venda da IPA em reais por litro" /></div>
+              <div class="range-scale"><span>R$ 0</span><span>R$ 30/L</span></div>
+            </div>
+
+            <div class="control-group compact-control">
+              <div class="control-label-row"><label for="fixed-cost">Custo fixo total</label><span class="field-suffix">R$ mil</span></div>
+              <div class="money-input"><span>R$</span><input id="fixed-cost" type="number" min="0" step="1" value="120" aria-label="Custo fixo total em milhares de reais" /></div>
+              <p class="input-note">O caso-base considera R$ 120 mil.</p>
+            </div>
+
+            <details class="cost-editor">
+              <summary><span>Editar custos variáveis</span><span class="summary-arrow">↓</span></summary>
+              <div class="cost-table-wrap"><table><caption class="sr-only">Custos variáveis por volume produzido</caption><thead><tr><th>Volume</th><th>CV <span>(R$ mil)</span></th></tr></thead><tbody id="cost-table-body"></tbody></table></div>
+              <p class="input-note">Altere os valores para testar uma estrutura de custos diferente.</p>
+            </details>
+
+            <button id="reset-button" class="reset-button" type="button"><span aria-hidden="true">↺</span> Restaurar caso-base</button>
+          </aside>
+
+          <div class="dashboard-content">
+            <div class="dashboard-heading">
+              <div><p class="section-kicker">02 / leitura executiva</p><h2>Visão geral da decisão</h2></div>
+              <div class="updated-label"><span class="live-dot" aria-hidden="true"></span><span>atualizado agora</span></div>
+            </div>
+
+            <div class="metric-grid" aria-label="Indicadores principais">
+              <article class="metric-card metric-status"><div class="metric-top"><span>eficiência produtiva</span><span class="metric-index">01</span></div><strong id="status-value">Eficiente</strong><p id="status-detail">Utilização total da capacidade</p><div class="metric-bar"><span id="status-bar"></span></div></article>
+              <article class="metric-card"><div class="metric-top"><span>receita IPA</span><span class="metric-index">02</span></div><strong id="revenue-value">R$ 750 mil</strong><p>no preço e volume atuais</p><div class="metric-spark revenue-spark"><span></span><span></span><span></span><span></span><span></span></div></article>
+              <article class="metric-card"><div class="metric-top"><span>lucro estimado</span><span class="metric-index">03</span></div><strong id="profit-value">R$ 190 mil</strong><p id="profit-detail">margem operacional de 25,3%</p><div class="metric-spark profit-spark"><span></span><span></span><span></span><span></span><span></span></div></article>
+              <article class="metric-card"><div class="metric-top"><span>ponto de equilíbrio</span><span class="metric-index">04</span></div><strong id="breakeven-value">20 mil L</strong><p id="breakeven-detail">R$ 300 mil de receita</p><div class="metric-badge">BREAK-EVEN</div></article>
+            </div>
+
+            <div class="chart-grid">
+              <article class="chart-card chart-wide"><div class="chart-header"><div><p class="chart-kicker">produção</p><h3>Fronteira de possibilidades</h3></div><span class="chart-note" id="cpp-note">Ponto C · base Guará</span></div><div class="chart-wrap"><canvas id="cpp-chart" aria-label="Gráfico da fronteira de possibilidades de produção"></canvas></div><div class="chart-legend"><span><i class="legend-dot frontier-dot"></i> fronteira eficiente</span><span><i class="legend-dot user-dot"></i> sua combinação</span><span><i class="legend-dot capacity-dot"></i> capacidade disponível</span></div></article>
+              <article class="chart-card"><div class="chart-header"><div><p class="chart-kicker">mercado IPA</p><h3>Oferta & demanda</h3></div><span class="chart-note" id="market-note">equilíbrio R$ 15</span></div><div class="chart-wrap"><canvas id="market-chart" aria-label="Gráfico de oferta e demanda da IPA"></canvas></div><div class="inline-diagnostic" id="market-diagnostic"><span class="diagnostic-icon">≈</span><span>Mercado em equilíbrio no preço atual.</span></div></article>
+              <article class="chart-card"><div class="chart-header"><div><p class="chart-kicker">faturamento</p><h3>Receita total × preço</h3></div><span class="chart-note highlight-note">máximo R$ 900 mil</span></div><div class="chart-wrap"><canvas id="revenue-chart" aria-label="Gráfico de receita total por preço"></canvas></div><div class="inline-diagnostic"><span class="diagnostic-icon">↗</span><span id="elasticity-note">Demanda localmente elástica.</span></div></article>
+              <article class="chart-card chart-wide"><div class="chart-header"><div><p class="chart-kicker">rentabilidade</p><h3>Receita total × custo total</h3></div><span class="chart-note" id="profit-note">lucro máximo em 50 mil L</span></div><div class="chart-wrap"><canvas id="cost-chart" aria-label="Gráfico de receita total e custo total por volume"></canvas></div><div class="chart-legend"><span><i class="legend-line revenue-line"></i> receita total</span><span><i class="legend-line cost-line"></i> custo total</span><span><i class="legend-dot breakeven-dot"></i> break-even</span></div></article>
+            </div>
+
+            <section class="cost-strip" aria-label="Indicadores de custos de curto prazo">
+              <article><span>custo médio atual</span><strong id="cme-value">R$ 11,20/L</strong><small>CT ÷ volume produzido</small></article>
+              <article><span>custo marginal do trecho</span><strong id="cmg-value">R$ 12,00/L</strong><small>ΔCT ÷ ΔQ no último bloco</small></article>
+              <article><span>melhor volume discreto</span><strong id="best-volume-value">50 mil L</strong><small id="best-profit-value">lucro estimado de R$ 190 mil</small></article>
+            </section>
+
+            <section class="insights-section" aria-labelledby="insights-title">
+              <div class="insights-heading"><div><p class="section-kicker">03 / interpretação</p><h2 id="insights-title">Insights da apresentação</h2></div><span class="insights-mark" aria-hidden="true">✳</span></div>
+              <div class="insights-grid">
+                <article class="insight-card"><div class="insight-icon green-icon">⌁</div><div><h3>Leitura produtiva</h3><p id="insight-efficiency">A combinação atual está sobre a CPP, usando integralmente os recursos.</p></div></article>
+                <article class="insight-card"><div class="insight-icon gold-icon">↘</div><div><h3>Custo de oportunidade</h3><p id="insight-opportunity">Produzir este volume de IPA sacrifica 40 mil L de Pilsen em relação à capacidade máxima de Pilsen. O custo marginal está em 2 L por litro adicional.</p></div></article>
+                <article class="insight-card"><div class="insight-icon coral-icon">◒</div><div><h3>Resultado financeiro</h3><p id="insight-finance">A receita cobre os custos com folga: lucro estimado de R$ 190 mil, acima do break-even.</p></div></article>
+                <article class="insight-card"><div class="insight-icon blue-icon">⇄</div><div><h3>Estrutura de mercado</h3><p>IPA artesanal opera em concorrência monopolística: diferenciação importa. Pilsen mainstream se aproxima de um oligopólio concentrado.</p></div></article>
+              </div>
+            </section>
+
+            <footer class="site-footer"><span>GUARÁ / SIMULADOR ECONÔMICO</span><span>Dados e relações econômicas baseados no estudo de caso fornecido.</span><span class="mono">UFMA · 2026</span></footer>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="live-region" class="sr-only" aria-live="polite"></div>
+  </body>
+</html>
